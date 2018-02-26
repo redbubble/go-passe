@@ -17,24 +17,31 @@ func printIndent(level int) {
 }
 
 func printFailedTests(name string, tests *testNode, level int) {
-	if tests.Passed {
-		return
-	}
 
-	if level == 0 {
-		fmt.Println()
-	}
-
-	printIndent(level)
-	fmt.Println(aurora.Bold(aurora.Red("✗")), name)
-
-	if tests.Output != nil {
-		fmt.Println()
-		for _, line := range tests.Output {
-			printIndent(level + 1)
-			fmt.Println(aurora.Red(line))
+	if tests.Passed != nil && !*tests.Passed {
+		if level == 0 {
+			fmt.Println()
 		}
-		fmt.Println()
+
+		printIndent(level)
+
+		// Support showing all statuses for debugging, even though we only show failures for now
+		if tests.Passed == nil {
+			fmt.Println(aurora.Bold(aurora.Cyan("?")), name)
+		} else if *tests.Passed {
+			fmt.Println(aurora.Bold(aurora.Green("✓")), name)
+		} else {
+			fmt.Println(aurora.Bold(aurora.Red("✗")), name)
+
+			if tests.Output != nil {
+				fmt.Println()
+				for _, line := range tests.Output {
+					printIndent(level + 1)
+					fmt.Println(aurora.Red(line))
+				}
+				fmt.Println()
+			}
+		}
 	}
 
 	for childName, child := range tests.ChildrenByName {
@@ -69,7 +76,8 @@ func main() {
 			} else {
 				fmt.Printf("%s %s %gs\n", aurora.Bold(aurora.Green("✓")), event.Package, event.Elapsed)
 			}
-			testSuite.Get(event.TestID).Passed = true
+			passed := true
+			testSuite.Get(event.TestID).Passed = &passed
 
 		case "fail":
 			if event.Test != "" {
@@ -77,7 +85,7 @@ func main() {
 			} else {
 				fmt.Printf("%s %s %gs\n", aurora.Bold(aurora.Red("✗")), event.Package, event.Elapsed)
 			}
-			testSuite.Get(event.TestID).Passed = false
+			testSuite.MarkFailed(event.TestID)
 			allPassed = false
 
 		case "output":
@@ -90,7 +98,7 @@ func main() {
 	if allPassed {
 		fmt.Println(aurora.Bold(aurora.Green("\nAll tests passed")))
 	} else {
-		fmt.Println(aurora.Bold(aurora.Red("\nTest failures:")))
+		fmt.Println(aurora.Bold(aurora.Red("\nTest failures:\n")))
 		for packageName, tests := range testSuite.TestsByPackage {
 			printFailedTests(packageName, tests, 0)
 		}

@@ -14,6 +14,10 @@ func (s *testSuite) Get(id TestID) *testNode {
 	return s.testsForPackage(id.Package).Get(id.Test)
 }
 
+func (s *testSuite) MarkFailed(id TestID) {
+	s.testsForPackage(id.Package).MarkFailed(id.Test)
+}
+
 func (s *testSuite) testsForPackage(packageName string) *testNode {
 	testNode, ok := s.TestsByPackage[packageName]
 	if !ok {

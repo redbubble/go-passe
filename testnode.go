@@ -3,7 +3,7 @@ package main
 import "strings"
 
 type testNode struct {
-	Passed         bool
+	Passed         *bool
 	Output         []string
 	ChildrenByName map[string]*testNode
 }
@@ -23,13 +23,22 @@ func (n *testNode) AppendOutput(output string) {
 	if strings.HasPrefix(trimmed, "exit status ") {
 		return
 	}
+	if strings.HasPrefix(trimmed, "coverage: ") && strings.HasSuffix(trimmed, " of statements") {
+		return
+	}
 	if strings.HasPrefix(trimmed, "FAIL\t") {
+		return
+	}
+	if strings.HasPrefix(trimmed, "PASS") {
 		return
 	}
 	if strings.HasPrefix(trimmed, "=== RUN   ") {
 		return
 	}
 	if strings.HasPrefix(trimmed, "--- FAIL: ") {
+		return
+	}
+	if strings.HasPrefix(trimmed, "--- PASS: ") {
 		return
 	}
 	if strings.HasPrefix(trimmed, "?   ") && strings.HasSuffix(trimmed, "\t[no test files]") {
@@ -52,6 +61,25 @@ func (n *testNode) Get(name string) *testNode {
 	}
 
 	return child.Get(rest)
+}
+
+func (n *testNode) MarkFailed(name string) {
+	next, rest := pathStep(name)
+	if next == "" {
+		passed := false
+		n.Passed = &passed
+		return
+	}
+
+	child, ok := n.ChildrenByName[next]
+	if !ok {
+		child = newTestNode()
+		n.ChildrenByName[next] = child
+	}
+
+	passed := false
+	child.Passed = &passed
+	child.MarkFailed(rest)
 }
 
 func pathStep(nodeName string) (next, rest string) {

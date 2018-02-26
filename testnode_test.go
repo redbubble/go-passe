@@ -30,10 +30,13 @@ func TestTestNode(t *testing.T) {
 			n := newTestNode()
 
 			n.AppendOutput("    FAIL")
+			n.AppendOutput("    PASS")
 			n.AppendOutput("    FAIL\tsome/package/test\t0.103s")
 			n.AppendOutput("  === RUN   SomeTest")
 			n.AppendOutput("  --- FAIL: SomeTest (0.00s)")
+			n.AppendOutput("  --- PASS: SomeTest (0.00s)")
 			n.AppendOutput("    exit status 1")
+			n.AppendOutput("    coverage: 80.2% of statements")
 			n.AppendOutput("    ?   \tsome/package/test\t[no test files]")
 
 			if actual, expected := len(n.Output), 0; actual != expected {
