@@ -1,8 +1,8 @@
-# go-test-json-summary
+# go-passe
 
-[![GoDoc](https://godoc.org/github.com/redbubble/go-test-json-summary?status.svg)](https://godoc.org/github.com/redbubble/go-test-json-summary)
-[![Go Report Card](https://goreportcard.com/badge/github.com/redbubble/go-test-json-summary)](https://goreportcard.com/report/github.com/redbubble/go-test-json-summary)
-[![Build Status](https://travis-ci.org/redbubble/go-test-json-summary.svg?branch=master)](https://travis-ci.org/redbubble/go-test-json-summary)
+[![GoDoc](https://godoc.org/github.com/redbubble/go-passe?status.svg)](https://godoc.org/github.com/redbubble/go-passe)
+[![Go Report Card](https://goreportcard.com/badge/github.com/redbubble/go-passe)](https://goreportcard.com/report/github.com/redbubble/go-passe)
+[![Build Status](https://travis-ci.org/redbubble/go-passe.svg?branch=master)](https://travis-ci.org/redbubble/go-passe)
 
 Utility for neatly summarising Go JSON test output.
 
@@ -15,8 +15,8 @@ Example usage:
 
 ```
 # Install this utility
-$ go get -u github.com/redbubble/go-test-json-summary
+$ go get -u github.com/redbubble/go-passe
 
 # Run some tests
-$ go test -v -json ./... | go-test-json-summary 
+$ go test -v -json ./... | go-passe
 ```
