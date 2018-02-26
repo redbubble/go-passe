@@ -64,10 +64,11 @@ func (n *testNode) Get(name string) *testNode {
 }
 
 func (n *testNode) MarkFailed(name string) {
+	passed := false
+	n.Passed = &passed
+
 	next, rest := pathStep(name)
 	if next == "" {
-		passed := false
-		n.Passed = &passed
 		return
 	}
 
@@ -77,8 +78,6 @@ func (n *testNode) MarkFailed(name string) {
 		n.ChildrenByName[next] = child
 	}
 
-	passed := false
-	child.Passed = &passed
 	child.MarkFailed(rest)
 }
 

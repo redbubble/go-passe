@@ -98,7 +98,7 @@ func main() {
 	if allPassed {
 		fmt.Println(aurora.Bold(aurora.Green("\nAll tests passed")))
 	} else {
-		fmt.Println(aurora.Bold(aurora.Red("\nTest failures:\n")))
+		fmt.Println(aurora.Bold(aurora.Red("\nTest failures:")))
 		for packageName, tests := range testSuite.TestsByPackage {
 			printFailedTests(packageName, tests, 0)
 		}
