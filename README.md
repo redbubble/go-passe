@@ -8,8 +8,9 @@ Utility for neatly summarising Go JSON test output.
 
 ## Introduction
 
-This allows the output from a `go test -json` command to be piped into it for
-prettier formatting and more easily identified test failures.
+This allows the output from a `go test -json` command (the `-json` flag is
+introduced in Go 1.10) to be piped into it for prettier formatting and more
+easily identified test failures.
 
 Example usage:
 
