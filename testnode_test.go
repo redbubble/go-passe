@@ -34,6 +34,7 @@ func TestTestNode(t *testing.T) {
 			n.AppendOutput("  === RUN   SomeTest")
 			n.AppendOutput("  --- FAIL: SomeTest (0.00s)")
 			n.AppendOutput("    exit status 1")
+			n.AppendOutput("    ?   \tsome/package/test\t[no test files]")
 
 			if actual, expected := len(n.Output), 0; actual != expected {
 				t.Errorf("Expected all lines of output to be filtered out but got %#v", n.Output)

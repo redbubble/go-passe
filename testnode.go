@@ -32,6 +32,9 @@ func (n *testNode) AppendOutput(output string) {
 	if strings.HasPrefix(trimmed, "--- FAIL: ") {
 		return
 	}
+	if strings.HasPrefix(trimmed, "?   ") && strings.HasSuffix(trimmed, "\t[no test files]") {
+		return
+	}
 
 	n.Output = append(n.Output, trimmed)
 }
