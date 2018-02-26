@@ -54,7 +54,7 @@ func main() {
 		err := jsonDecoder.Decode(&event)
 		if err != nil {
 			if err != io.EOF {
-				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				fmt.Fprintf(os.Stderr, "Error: %v\n\nForgt to pass -json to 'go test'?\n", err)
 				os.Exit(2)
 			}
 			break
