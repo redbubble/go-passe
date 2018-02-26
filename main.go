@@ -55,6 +55,7 @@ func main() {
 		if err != nil {
 			if err != io.EOF {
 				fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+				os.Exit(2)
 			}
 			break
 		}
