@@ -54,3 +54,9 @@ $ go get -u github.com/golang/dep/cmd/dep
 # Ensure all dependencies are available/fetched
 $ dep ensure
 ```
+
+## License
+
+go-passe, Copyright © 2018 Redbubble
+
+This software is made available under an [MIT license](LICENSE).
