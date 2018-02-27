@@ -63,13 +63,7 @@ func (n *testNode) Get(name string) *testNode {
 		return n
 	}
 
-	child, ok := n.ChildrenByName[next]
-	if !ok {
-		child = newTestNode()
-		n.ChildrenByName[next] = child
-	}
-
-	return child.Get(rest)
+	return n.childForNextPathStep(next).Get(rest)
 }
 
 func (n *testNode) MarkFailed(name string) {
@@ -80,13 +74,7 @@ func (n *testNode) MarkFailed(name string) {
 		return
 	}
 
-	child, ok := n.ChildrenByName[next]
-	if !ok {
-		child = newTestNode()
-		n.ChildrenByName[next] = child
-	}
-
-	child.MarkFailed(rest)
+	n.childForNextPathStep(next).MarkFailed(rest)
 }
 
 func (n *testNode) MarkPassed(name string) {
@@ -96,13 +84,17 @@ func (n *testNode) MarkPassed(name string) {
 		return
 	}
 
+	n.childForNextPathStep(next).MarkPassed(rest)
+}
+
+func (n *testNode) childForNextPathStep(next string) *testNode {
 	child, ok := n.ChildrenByName[next]
 	if !ok {
 		child = newTestNode()
 		n.ChildrenByName[next] = child
 	}
 
-	child.MarkPassed(rest)
+	return child
 }
 
 func pathStep(nodeName string) (next, rest string) {

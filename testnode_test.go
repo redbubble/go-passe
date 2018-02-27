@@ -56,17 +56,25 @@ func TestTestNode(t *testing.T) {
 			if apple == nil {
 				t.Fatalf("Expected a child to be created for path step 'apple' but was nil")
 			}
+			if apple.State != Unknown {
+				t.Errorf("Expected child 'apple' to be marked as unknown but wasn't")
+			}
 
 			banana := apple.ChildrenByName["banana"]
 			if banana == nil {
 				t.Fatalf("Expected a child to be created for path step 'banana' but was nil")
+			}
+			if banana.State != Unknown {
+				t.Errorf("Expected child 'banana' to be marked as unknown but wasn't")
 			}
 
 			pear := banana.ChildrenByName["pear"]
 			if pear == nil {
 				t.Fatalf("Expected a child to be created for path step 'pear' but was nil")
 			}
-
+			if pear.State != Unknown {
+				t.Errorf("Expected child 'pear' to be marked as unknown but wasn't")
+			}
 			if pear != child {
 				t.Errorf("Expected final child to be returned but was different")
 			}
@@ -80,6 +88,102 @@ func TestTestNode(t *testing.T) {
 
 			if child1 != child2 {
 				t.Fatalf("Expected same child to be returned for same path but was different")
+			}
+		})
+	})
+
+	t.Run(".MarkFailed()", func(t *testing.T) {
+
+		t.Run("creates children for each path step", func(t *testing.T) {
+			n := newTestNode()
+
+			n.MarkFailed("apple/banana/pear")
+
+			apple := n.ChildrenByName["apple"]
+			if apple == nil {
+				t.Fatalf("Expected a child to be created for path step 'apple' but was nil")
+			}
+			if apple.State != Failed {
+				t.Errorf("Expected child 'apple' to be marked as failed but wasn't")
+			}
+
+			banana := apple.ChildrenByName["banana"]
+			if banana == nil {
+				t.Fatalf("Expected a child to be created for path step 'banana' but was nil")
+			}
+			if banana.State != Failed {
+				t.Errorf("Expected child 'banana' to be marked as failed but wasn't")
+			}
+
+			pear := banana.ChildrenByName["pear"]
+			if pear == nil {
+				t.Fatalf("Expected a child to be created for path step 'pear' but was nil")
+			}
+			if pear.State != Failed {
+				t.Errorf("Expected child 'pear' to be marked as failed but wasn't")
+			}
+		})
+
+		t.Run("marks existing children along the path as failed", func(t *testing.T) {
+			n := newTestNode()
+
+			child := n.Get("apple/banana")
+			if child.State != Unknown {
+				t.Errorf("Expected child to start off in unknown state but wasn't")
+			}
+
+			n.MarkFailed("apple/banana")
+
+			if child.State != Failed {
+				t.Errorf("Expected child to be marked as failed but wasn't")
+			}
+		})
+	})
+
+	t.Run(".MarkPassed()", func(t *testing.T) {
+
+		t.Run("creates children for each path step, marking the last as passed", func(t *testing.T) {
+			n := newTestNode()
+
+			n.MarkPassed("apple/banana/pear")
+
+			apple := n.ChildrenByName["apple"]
+			if apple == nil {
+				t.Fatalf("Expected a child to be created for path step 'apple' but was nil")
+			}
+			if apple.State != Unknown {
+				t.Errorf("Expected child 'apple' to be in unknown state but wasn't")
+			}
+
+			banana := apple.ChildrenByName["banana"]
+			if banana == nil {
+				t.Fatalf("Expected a child to be created for path step 'banana' but was nil")
+			}
+			if banana.State != Unknown {
+				t.Errorf("Expected child 'banana' to be in unknown state but wasn't")
+			}
+
+			pear := banana.ChildrenByName["pear"]
+			if pear == nil {
+				t.Fatalf("Expected a child to be created for path step 'pear' but was nil")
+			}
+			if pear.State != Passed {
+				t.Errorf("Expected child 'pear' to be marked as passed but wasn't")
+			}
+		})
+
+		t.Run("leaves existing children along the path in their existing state", func(t *testing.T) {
+			n := newTestNode()
+
+			child := n.Get("apple/banana")
+			if child.State != Unknown {
+				t.Errorf("Expected child to start off in unknown state but wasn't")
+			}
+
+			n.MarkPassed("apple/banana")
+
+			if child.State != Passed {
+				t.Errorf("Expected child to be marked as passed but wasn't")
 			}
 		})
 	})
