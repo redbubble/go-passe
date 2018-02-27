@@ -2,14 +2,23 @@ package main
 
 import "strings"
 
+type TestState int
+
+const (
+	Unknown TestState = iota + 1
+	Passed
+	Failed
+)
+
 type testNode struct {
-	Passed         *bool
+	State          TestState
 	Output         []string
 	ChildrenByName map[string]*testNode
 }
 
 func newTestNode() *testNode {
 	return &testNode{
+		State:          Unknown,
 		ChildrenByName: make(map[string]*testNode),
 	}
 }
@@ -64,8 +73,7 @@ func (n *testNode) Get(name string) *testNode {
 }
 
 func (n *testNode) MarkFailed(name string) {
-	passed := false
-	n.Passed = &passed
+	n.State = Failed
 
 	next, rest := pathStep(name)
 	if next == "" {
@@ -79,6 +87,22 @@ func (n *testNode) MarkFailed(name string) {
 	}
 
 	child.MarkFailed(rest)
+}
+
+func (n *testNode) MarkPassed(name string) {
+	next, rest := pathStep(name)
+	if next == "" {
+		n.State = Passed
+		return
+	}
+
+	child, ok := n.ChildrenByName[next]
+	if !ok {
+		child = newTestNode()
+		n.ChildrenByName[next] = child
+	}
+
+	child.MarkPassed(rest)
 }
 
 func pathStep(nodeName string) (next, rest string) {
