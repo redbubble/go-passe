@@ -62,17 +62,24 @@ func main() {
 	var actionPattern = regexp.MustCompile(`^\S+`)
 	var testSuite = newTestSuite()
 	var allPassed = true
+	var eventCount = 0
 
 	for {
 		var event TestEvent
 		err := jsonDecoder.Decode(&event)
 		if err != nil {
 			if err != io.EOF {
-				fmt.Fprintf(os.Stderr, "Error: %v\n\nForgt to pass -json to 'go test'?\n", err)
+				fmt.Fprintf(os.Stderr, "Error: %v\n\nForgot to pass -json to 'go test'?\n", err)
 				os.Exit(2)
+			}
+			if eventCount == 0 {
+				fmt.Fprintln(os.Stderr, "Error: No Go test events detected")
+				os.Exit(3)
 			}
 			break
 		}
+
+		eventCount++
 
 		action := actionPattern.FindString(event.Action)
 
