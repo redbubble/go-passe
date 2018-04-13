@@ -69,11 +69,15 @@ func main() {
 		err := jsonDecoder.Decode(&event)
 		if err != nil {
 			if err != io.EOF {
-				fmt.Fprintf(os.Stderr, "Error: %v\n\nForgot to pass -json to 'go test'?\n", err)
+				if eventCount > 0 {
+					fmt.Fprintf(os.Stderr, "go-passe: %v\n", err)
+				} else {
+					fmt.Fprintf(os.Stderr, "go-passe: %v\n\nForgot to pass -json to 'go test'?\n", err)
+				}
 				os.Exit(2)
 			}
 			if eventCount == 0 {
-				fmt.Fprintln(os.Stderr, "Error: No Go test events detected")
+				fmt.Fprintln(os.Stderr, "go-passe: no Go test events detected")
 				os.Exit(3)
 			}
 			break
