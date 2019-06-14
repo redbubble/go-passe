@@ -6,6 +6,12 @@
 
 Utility for neatly summarising Go JSON test output.
 
+
+## DEPRECATED
+
+This project is deprecated. Please consider using something like [gotestsum](https://github.com/gotestyourself/gotestsum) instead, which, by avoiding the pipe approach, can better handle cases like compilation errors, etc.
+
+
 ## Introduction
 
 This allows the output from a `go test -json` command (the `-json` flag is
